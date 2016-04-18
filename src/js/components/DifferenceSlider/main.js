@@ -1,5 +1,6 @@
 import {Observable} from 'rx';
 import {h2, div} from '@cycle/dom';
+import isolate from '@cycle/isolate'
 import LabeledInputSlider from './LabeledInputSlider';
 
 function model(weightIntent$, heightIntent$){
@@ -38,7 +39,7 @@ function view(state$, lowView, highView) {
   )
 }
 
-function WeightRange({DOM}) {
+function DifferenceSlider(DOM, reset$) {
   // settings
   const lowProps = {
     classname: '.low',
@@ -56,8 +57,8 @@ function WeightRange({DOM}) {
   }
 
   // loading intents and views
-  const lowRange = LabeledInputSlider(DOM, lowProps);
-  const highRange = LabeledInputSlider(DOM, highProps);
+  const lowRange = LabeledInputSlider(DOM, lowProps, reset$);
+  const highRange = LabeledInputSlider(DOM, highProps, reset$);
 
   const state$ = model(lowRange.intent$, highRange.intent$);
   const vtree$ = view(state$, lowRange.view, highRange.view);
@@ -67,6 +68,6 @@ function WeightRange({DOM}) {
   };
 }
 
-export default WeightRange;
+export default (sources) => isolate(DifferenceSlider)(sources)
 
 

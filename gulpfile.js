@@ -4,8 +4,8 @@ var browserify = require('browserify');
 var babelify = require('babelify');
 var source = require('vinyl-source-stream');
 
-var entryFile = './src/js/index.js',
-    outputFile = 'build-js.js',
+var entryFile = './src/js/main.js',
+    outputFile = 'build.js',
     jsBuidDir = './dist/scripts',
     HTMLBuildDir = './dist';
 
