@@ -5,11 +5,10 @@ import isolate from '@cycle/isolate';
 
 function Reset(sources) {
   const action$ = sources.DOM.select('.reset')
-      .events('click').map(ev => true).startWith(true);
+      .events('click').startWith('click')
 
   const vtree$ = action$.map(evt =>
     div([
-
       button('.reset', 'Reset')
     ])
   )

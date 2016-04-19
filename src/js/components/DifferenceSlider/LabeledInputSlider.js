@@ -1,39 +1,54 @@
 import {Observable} from 'rx';
 import {div, label, input} from '@cycle/dom';
 
-function LabeledInputSlider(driver, props) {
-  var name = props.classname
-    , text = props.text
-    , units = props.units
-    , min = props.min
-    , max = props.max;
+function LabeledInputSlider(DOM, props$, reset$) {
+  const intent$ = props$.flatMap((props)=> {
 
-  const name1 = name+1;
-  const name2 = name+2;
-  return {
-    intent$: Observable.merge( 
-        driver.select(name1).events('input'),
-        driver.select(name2).events('input')
-      )
-      .map(ev => ({
-        name : ev.target.className,
-        value :ev.target.value,
-        time: ev.timeStamp
-      })),
+    const sliderClass = `.${props.classname}-slider`;
+    const inputClass = `.${props.classname}-input`;
+    const resetClass = `.${props.classname}-reset`
 
-    view :(state) => {
-      return div([
-            label(text),
-            input(name1, {
+    const sliderInputMap = ev => ({
+      name : ev.target.className,
+      value :ev.target.value,
+      time: ev.timeStamp
+    });
+
+    const resetMap = (ev)=> ({
+      name : resetClass,
+      value :props.start,
+      time: ev.timeStamp
+    });
+
+    return Observable.merge( 
+      DOM.select(sliderClass).events('input').map(sliderInputMap),
+      DOM.select(inputClass).events('input').map(sliderInputMap),
+      reset$.map(resetMap)
+    );
+  });
+
+  const viewChild$ = (state) => {
+    return Observable.of(state)
+      .flatMap(state =>
+        props$.map( props => {
+          return div(`.${props.classname}`,[
+            label(props$.text),
+            input(`.${props.classname}-slider`, {
               type: 'range',
-              min: min,
-              max: max,
+              min: props$.min,
+              max: props$.max,
               value: state
             }),
-            input(name2, {value: state}),
-            label(units),
-          ]);
+            input(`.${props.classname}-input`, {value: state}),
+            label(props$.units),
+          ])
+        })
+      )
     }
+
+  return {
+    intent$,
+    viewChild$
   }
 }
 

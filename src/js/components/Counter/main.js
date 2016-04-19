@@ -14,7 +14,7 @@ function model(intent1$, intent2$) {
       let count3 = count1 + count2;
       return {count1, count2, count3}
     }
-  )
+  );
 }
 
 function view(counter1, counter2, state$) {
@@ -24,24 +24,17 @@ function view(counter1, counter2, state$) {
       counter2(state.count2),
       p('Total ' + state.count3)
     ])
-  )
+  );
 }
 
 function main(DOM, reset$) {
-  let props1$ = Observable.of({
-    decSelect: '.decrement1',
-    incSelect: '.increment1'
-  })
-
-  let props2$ = Observable.of({
-      decSelect: '.decrement2',
-      incSelect: '.increment2'
-    })
+  let props1$ = Observable.of('group-one');
+  let props2$ = Observable.of('group-two');
   
   let counter1 = allIntentView(DOM, props1$, reset$);
   let counter2 = allIntentView(DOM, props2$, reset$);
   
-  let state$ = model(counter1.intent$ ,counter2.intent$, external)
+  let state$ = model(counter1.intent$ ,counter2.intent$);
 
   let vtree$ = view(
     counter1.templateVTree$,

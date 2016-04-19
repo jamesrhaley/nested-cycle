@@ -14,18 +14,20 @@ function oViewParcial(data, view){
 }
 
 function allIntentView(DOM, prop$, reset$) {
-  const intent$ = prop$.flatMap((prop)=> Observable.merge(
-    DOM.select(prop.decSelect).events('click').map(ev => -1),
-    DOM.select(prop.incSelect).events('click').map(ev => +1),
-    reset$.map(()=>0)
-  ));
+  const intent$ = prop$.flatMap((prop)=> {
+    return Observable.merge(
+      DOM.select(`.${prop} .dec`).events('click').map(ev => -1),
+      DOM.select(`.${prop} .inc`).events('click').map(ev => +1),
+      reset$.map(()=>0)
+    )}
+  );
   
   const templateVTree$ = (count) => Observable.of(count)
     .flatMap(count =>
       prop$.map( prop =>
-        div([
-          button(prop.decSelect, '--'),
-          button(prop.incSelect, '++'),
+        div(`.${prop}`, [
+          button(".dec", '--'),
+          button(".inc", '++'),
           p('Counter: ' + count)
         ])
       ))
@@ -37,3 +39,6 @@ function allIntentView(DOM, prop$, reset$) {
 }
 
 export default allIntentView
+
+
+

@@ -14,17 +14,18 @@ function model(weightIntent$, heightIntent$){
       let h = high.value;
       let l = low.value;
       const current = high.time > low.time ? high.name: low.name;
-      let range = h - l;
-      if (range <= 0 ){
+      console.log(low)
+      let difference = h - l;
+      if (difference <= 0 ){
         if (current === high.name) {
           l = h;
-          range = 0;
+          difference = 0;
         } else if (current === low.name) {
           h = l;
-          range = 0;
+          difference = 0;
         }
       }
-      return {range:range, low:l, high:h};
+      return {difference, low:l, high:h};
     }
   );
 }
@@ -34,40 +35,43 @@ function view(state$, lowView, highView) {
     return div([
       lowView(state.low),
       highView(state.high),
-      h2('Range is ' + state.range)
+      h2('Difference is ' + state.difference)
     ])}
   )
 }
 
 function DifferenceSlider(DOM, reset$) {
-  // settings
-  const lowProps = {
-    classname: '.low',
+  const lowProps = Observable.of({
+    classname: 'low',
     text: 'Low: ',
     units: 'kg',
     min: 0,
-    max: 150
-  }
-  const highProps = {
-    classname: '.high',
+    max: 150,
+    start:0
+  })
+  const highProps = Observable.of({
+    classname: 'high',
     text: 'High: ',
     units: 'kg',
     min: 0,
-    max: 150
-  }
+    max: 150,
+    start:150
+  })
 
   // loading intents and views
   const lowRange = LabeledInputSlider(DOM, lowProps, reset$);
   const highRange = LabeledInputSlider(DOM, highProps, reset$);
 
   const state$ = model(lowRange.intent$, highRange.intent$);
-  const vtree$ = view(state$, lowRange.view, highRange.view);
+  const vtree$ = view(
+    state$, lowRange.viewChild$, highRange.viewChild$
+  );
   
   return {
     DOM: vtree$
   };
 }
 
-export default (sources) => isolate(DifferenceSlider)(sources)
+export default DifferenceSlider
 
 
