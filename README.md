@@ -25,7 +25,7 @@ the following is an illustration of this design
 
 <img src="https://cloud.githubusercontent.com/assets/8505062/14648862/f9c99cb0-0629-11e6-9ba6-35b39bb231de.png" />
 
-If you want to reference examples I have create please download and play
+If you want to reference examples I have created please download and play!
 
 run these
 
