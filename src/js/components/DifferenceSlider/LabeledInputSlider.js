@@ -31,12 +31,13 @@ function LabeledInputSlider(DOM, props$, reset$) {
     return Observable.of(state)
       .flatMap(state =>
         props$.map( props => {
+
           return div(`.${props.classname}`,[
             label(props$.text),
             input(`.${props.classname}-slider`, {
               type: 'range',
-              min: props$.min,
-              max: props$.max,
+              min: props.min,
+              max: props.max,
               value: state
             }),
             input(`.${props.classname}-input`, {value: state}),

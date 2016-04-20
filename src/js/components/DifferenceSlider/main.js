@@ -3,18 +3,17 @@ import {h2, div} from '@cycle/dom';
 import isolate from '@cycle/isolate'
 import LabeledInputSlider from './LabeledInputSlider';
 
-function model(weightIntent$, heightIntent$){
+function model(lowIntent$, highIntent$){
   function starter(num){
     return { classname : '', time: 0, value: num};
   };
   return Observable.combineLatest(
-    weightIntent$.startWith(starter(0)),
-    heightIntent$.startWith(starter(150)),
+    lowIntent$,
+    highIntent$,
     (low, high) => {
       let h = high.value;
       let l = low.value;
       const current = high.time > low.time ? high.name: low.name;
-      console.log(low)
       let difference = h - l;
       if (difference <= 0 ){
         if (current === high.name) {
@@ -28,6 +27,38 @@ function model(weightIntent$, heightIntent$){
       return {difference, low:l, high:h};
     }
   );
+  // function lowpass(evt) {
+  //   return (acc) => {
+  //     acc.low = evt.value;
+  //     if (acc.low >= acc.high){
+  //       acc.high = acc.low;
+  //       acc.difference = 0;
+  //     } else {
+  //       acc.difference =  acc.high - acc.low;
+  //     }
+  //     return acc;
+  //   }
+  // }
+
+  // function highpass(evt) {
+  //   return (acc) => {
+  //     acc.high = evt.value
+  //     if (acc.low >= acc.high){
+  //       acc.low = acc.high;
+  //       acc.difference = 0;
+  //     } else {
+  //       acc.difference =  acc.high - acc.low;
+  //     }
+  //     return acc;
+  //   }
+  // }
+  // return Observable.merge(
+  //   lowIntent$.map(evt => lowpass(evt)),
+  //   highIntent$.map(evt => highpass(evt))
+  // )
+  // .startWith({difference:150,low:0,high:150})
+  // .scan((acc,curr) => curr(acc))
+
 }
 
 function view(state$, lowView, highView) {
